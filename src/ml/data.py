@@ -48,7 +48,7 @@ def process_data(
     """
 
     if label is not None:
-        y = X[label]
+        y = X[label].values
         X = X.drop([label], axis=1)
     else:
         y = np.array([])
@@ -60,11 +60,14 @@ def process_data(
         encoder = OneHotEncoder(sparse_output=False, handle_unknown="ignore")
         lb = LabelBinarizer()
         X_categorical = encoder.fit_transform(X_categorical)
-        y = lb.fit_transform(y.values).ravel()
+        y = lb.fit_transform(y).ravel()
     else:
         X_categorical = encoder.transform(X_categorical)
         try:
-            y = lb.transform(y.values).ravel()
+            if len(y) > 0:
+                y = lb.transform(y).ravel()
+            else:
+                y = np.array([0])
         except AttributeError:
             logger.warn(f"WARNING: skipped label processing in inference mode in preprocess_data()")
 
