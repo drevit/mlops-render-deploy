@@ -1,3 +1,4 @@
+from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import fbeta_score, precision_score, recall_score
 
 
@@ -18,7 +19,9 @@ def train_model(X_train, y_train):
         Trained machine learning model.
     """
 
-    pass
+    lr = LogisticRegression(max_iter=1000)
+    lr.fit(X=X_train, y=y_train)
+    return lr
 
 
 def compute_model_metrics(y, preds):

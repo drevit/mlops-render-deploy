@@ -1,6 +1,9 @@
 import numpy as np
 from sklearn.preprocessing import LabelBinarizer, OneHotEncoder
+from logging import getLogger, basicConfig, INFO
 
+logger = getLogger(__name__)
+basicConfig(level=INFO, format="%(asctime)-15s %(message)s")
 
 def process_data(
     X, categorical_features=[], label=None, training=True, encoder=None, lb=None
@@ -54,7 +57,7 @@ def process_data(
     X_continuous = X.drop(*[categorical_features], axis=1)
 
     if training is True:
-        encoder = OneHotEncoder(sparse=False, handle_unknown="ignore")
+        encoder = OneHotEncoder(sparse_output=False, handle_unknown="ignore")
         lb = LabelBinarizer()
         X_categorical = encoder.fit_transform(X_categorical)
         y = lb.fit_transform(y.values).ravel()
@@ -62,9 +65,9 @@ def process_data(
         X_categorical = encoder.transform(X_categorical)
         try:
             y = lb.transform(y.values).ravel()
-        # Catch the case where y is None because we're doing inference.
         except AttributeError:
-            pass
+            logger.warn(f"WARNING: skipped label processing in inference mode in preprocess_data()")
+
 
     X = np.concatenate([X_continuous, X_categorical], axis=1)
     return X, y, encoder, lb
