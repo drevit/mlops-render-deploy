@@ -10,9 +10,10 @@ client = TestClient(app)
 
 def test_get():
     r = client.get("/")
-    print(r.json())
+    assert r.status_code == 200
+    assert r.json()["message"] == "Greetings"
 
-def test_post():
+def test_post_0():
     data={"fnlgt": 77516,
           "education": "Bachelors",
           "education-num": 13,
@@ -27,7 +28,30 @@ def test_post():
           "native-country": "United-States",
           "age": 39,
           "workclass": "State-gov"}
-    r = client.post("/predict", data=json.dumps(data))
-    print(r.json())
+    r = client.post("/predict", content=json.dumps(data))
+    
+    assert r.status_code == 200
+    assert len(r.json().keys()) == 1
+    assert r.json()["prediction"] == [0]
 
-test_post()
+def test_post_1():
+    data={"fnlgt": 45781,
+          "education": "Masters",
+          "education-num": 14,
+          "marital-status": "Never-married",
+          "occupation": "Prof-specialtyl",
+          "relationship": "Not-in-family",
+          "race": "White",
+          "sex": "Female",
+          "capital-gain": 14084,
+          "capital-loss": 0,
+          "hours-per-week": 50,
+          "native-country": "United-States",
+          "age": 31,
+          "workclass": "Private"}
+
+    r = client.post("/predict", content=json.dumps(data))
+
+    assert r.status_code == 200
+    assert len(r.json().keys()) == 1
+    assert r.json()["prediction"] == [1]
