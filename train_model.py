@@ -9,7 +9,7 @@ import pickle
 from sklearn.model_selection import train_test_split
 
 from src.ml.data import process_data
-from src.ml.model import train_model
+from src.ml.model import train_model, compute_model_metrics
 
 data = pd.read_csv("./data/census_clean.csv")
 train, test = train_test_split(data, test_size=0.20)
@@ -38,3 +38,12 @@ model = train_model(X_train=X_train, y_train=y_train)
 
 with open("./model/model.pkl", "wb") as f:
     pickle.dump(model, f)
+
+y_train_pred = model.predict(X_train)
+y_test_pred = model.predict(X_test)
+prec_train, rec_train, fb_train = compute_model_metrics(y_train, y_train_pred)
+prec_test, rec_test, fb_test = compute_model_metrics(y_test, y_test_pred)
+
+print(f"Train metrics:\n\nPrecision: {prec_train}\nRecall: {rec_train}\nFbeta: {fb_train}")
+print("\n===================\n")
+print(f"Test metrics:\n\nPrecision: {prec_test}\nRecall: {rec_test}\nFbeta: {fb_test}")
