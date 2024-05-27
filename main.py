@@ -32,6 +32,29 @@ class Data(BaseModel):
     age: int
     workclass: str
 
+    model_config = {
+        "json_schema_extra": {
+            "examples": [
+                {
+                    "fnlgt": 77516,
+                    "education": "Bachelors",
+                    "education-num": 13,
+                    "marital-status": "Never-married",
+                    "occupation": "Adm-clerical",
+                    "relationship": "Not-in-family",
+                    "race":"White",
+                    "sex": "Male",
+                    "capital-gain": 2174,
+                    "capital-loss": 0,
+                    "hours-per-week": 40,
+                    "native-country": "United-States",
+                    "age": 39,
+                    "workclass": "State-gov"
+                }
+            ]
+        }
+    }
+
 with open("./model/model.pkl", "rb") as f:
     model = pickle.load(f)
 
